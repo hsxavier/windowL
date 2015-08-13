@@ -1,0 +1,29 @@
+
+************************************************************************************************
+    C++ code for computing the window function factor for going from angular power spectra 
+    C_l to expected variance \sigma^2 (of the real space variable) inside the window function
+    w(\theta):
+
+    \sigma^2 = \sum_l ( \sum_m |w_{lm}|^2 ) C_l
+                      ^^^^^^^^^^^^^^^^^^^^^
+		      window function factor    
+************************************************************************************************
+
+
+USAGE: 
+windowCl <Healpix map FITS file> <ASCII output file>
+
+OUTPUT:
+ASCII file containing two columns: l and the window function factor.
+
+COMPILING:
+ - This code depends on: Healpix libraries and data, FITSIO library. OpenMP would be nice.
+ - Edit the Makefile to change some variables like compiler and Healpix directory 
+   (most likely these two are the only required changes).
+ - On your terminal, in the code's directory, run: make
+
+
+Written by Henrique S. Xavier on 13/08/2015 at UCL, London
+Contact: hsxavier@if.usp.br
+
+

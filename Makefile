@@ -24,6 +24,7 @@ all: $(BIN)/windowL
 
 clean:
 	rm -f $(BIN)/windowL
+	rm -f $(OBJ)/windowL-made.cpp
 	rm -f $(OBJ)/*.o
 
 
@@ -32,9 +33,8 @@ $(BIN)/windowL: $(OBJ)/windowL.o $(OBJ)/Utilities.o
 	$(COMP) $(LDHEAL) $(OBJ)/windowL.o $(OBJ)/Utilities.o -o $@ $(LIBS)
 
 $(OBJ)/windowL.o: $(SRC)/windowL.cpp $(SRC)/Utilities.hpp
-
-	sed -i 's|#define HEALPIX_DATA .*|#define HEALPIX_DATA \"$(HEALDATA)\"|g' windowL.cpp
-	$(COMP) $(CXXHEAL) -c $(SRC)/windowL.cpp -o $@ $(CXXOMP)
+	sed 's|#define HEALPIX_DATA .*|#define HEALPIX_DATA \"$(HEALDATA)\"|g' $(SRC)/windowL.cpp > $(OBJ)/windowL-made.cpp
+	$(COMP) $(CXXHEAL) -c $(OBJ)/windowL-made.cpp -o $@ $(CXXOMP)
 
 $(OBJ)/Utilities.o: $(SRC)/Utilities.cpp $(SRC)/Utilities.hpp
 	$(COMP) $(CXXHEAL) -c $(SRC)/Utilities.cpp -o $@

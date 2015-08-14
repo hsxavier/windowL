@@ -11,16 +11,23 @@
 
 
 USAGE: 
-windowCl <Healpix map FITS file> <ASCII output file>
+windowL <Healpix map FITS file> <ASCII output file> <Map effective area file (optional)>
 
 OUTPUT:
-ASCII file containing two columns: l and the window function factor.
+ - ASCII file containing two columns: l and the window function factor.
+ - If an extra parameter is provided as input (<Map effective area file>), 
+   the code outputs to this file the map effective area (sum of the pixel values normalized 
+   to pixel area, this makes sense if 0<pixel values<1) in square degrees.
 
 COMPILING:
  - This code depends on: Healpix libraries and data, FITSIO library. OpenMP would be nice.
  - Edit the Makefile to change some variables like compiler and Healpix directory 
    (most likely these two are the only required changes).
  - On your terminal, in the code's directory, run: make
+
+ATTENTION:
+ - The code is hard-wired to set every pixel to either 0 or 1 depending if its value 
+   is <1 or >1. This can be changed in windowL.cpp (#define BINARIZE). 
 
 
 Written by Henrique S. Xavier on 13/08/2015 at UCL, London

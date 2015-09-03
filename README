@@ -21,8 +21,9 @@ OUTPUT:
 
 COMPILING:
  - This code depends on: Healpix libraries and data, FITSIO library. OpenMP would be nice.
- - Edit the Makefile to change some variables like compiler and Healpix directory 
-   (most likely these two are the only required changes).
+ - Edit the Makefile to change some variables like compiler and Healpix directory. You 
+   might need to change the Healpix cxx flavour as well (basic or generic) and possibly 
+   the location of the cfitsio library.
  - On your terminal, in the code's directory, run: make
 
 ATTENTION:

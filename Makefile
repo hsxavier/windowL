@@ -34,7 +34,7 @@ $(BIN)/windowL: $(OBJ)/windowL.o $(OBJ)/Utilities.o
 
 $(OBJ)/windowL.o: $(SRC)/windowL.cpp $(SRC)/Utilities.hpp
 	sed 's|#define HEALPIX_DATA .*|#define HEALPIX_DATA \"$(HEALDATA)\"|g' $(SRC)/windowL.cpp > $(OBJ)/windowL-made.cpp
-	$(COMP) $(CXXHEAL) -c $(OBJ)/windowL-made.cpp -o $@ $(CXXOMP)
+	$(COMP) $(CXXHEAL) $(CXXFITS) -c $(OBJ)/windowL-made.cpp -o $@ $(CXXOMP)
 
 $(OBJ)/Utilities.o: $(SRC)/Utilities.cpp $(SRC)/Utilities.hpp
 	$(COMP) $(CXXHEAL) -c $(SRC)/Utilities.cpp -o $@

@@ -24,7 +24,7 @@ Contact: hsxavier@if.usp.br
 
 // Auxiliary function header:
 void PrepRingWeights(int col, arr<double> & weight, int nside);
-
+void CreateWindow(std::string outfile, int nside);
 
 
 /*************************************************************/
@@ -40,6 +40,20 @@ int main (int argc, char *argv[]) {
   double **winClTable, area;
   std::ofstream outstream;
   printf("\n");
+
+  /*
+  // Create quadrilateral window function:
+  if (argc!=3) {
+    printf("Input is: <Map FITS output file> <Nside>\n");
+    printf("Exiting...\n\n");
+    return 1;
+  }
+  outfile.assign(argv[1]);
+  m = atoi(argv[2]);
+  CreateWindow(outfile, m);
+  return 0;
+  */
+
 
   // Check if number of input parameters is correct:
   if (argc!=3 && argc!=4) {
@@ -143,29 +157,46 @@ int main (int argc, char *argv[]) {
   Announce("Writing to fits file "+outfile+"... ");
   write_Healpix_map_to_fits("!"+outfile, Test, planckType<MAP_PRECISION>()); // Filename prefixed by ! to overwrite.
   Announce();
-  */
-
-  /*
-  // Create a 10deg x 10deg square of ones (rest is zero):
-  pointing v1(1.483529, 1.483529), v2(1.483529, 1.658063), v3(1.658063, 1.483529), v4(1.658063, 1.658063);
-  std::vector<pointing> vertex;
-  std::vector<int> pixlist;
-  vertex.push_back(v1); vertex.push_back(v2); vertex.push_back(v4); vertex.push_back(v3);
-  rangeset<int> pixset;
-  Map.query_polygon(vertex, pixset);
-  pixset.toVector(pixlist);
-  l = 12*Map.Nside()*Map.Nside();
-  for (m=0; m<l; m++) Map[m]=0.0;
-  for (m=0; m<pixlist.size(); m++) Map[pixlist[m]]=1.0;
-  write_Healpix_map_to_fits("!"+outfile, Map, planckType<MAP_PRECISION>());
-  return 0;
-  */
+  */  
 }
 
 
 /***************************/
 /*** Auxiliary functions ***/
 /***************************/
+
+
+// Create a quadrilateral window function of ones (rest is zero) given an Nside, and write to outfile:
+// Shape is hard-coded below:
+void CreateWindow(std::string outfile, int nside) {
+  Healpix_Map<MAP_PRECISION> Map;
+  std::vector<pointing> vertex;
+  std::vector<int> pixlist;
+  rangeset<int> pixset;
+  int npixels, i, count;
+  // Here you define the vertices of the square in radians (theta, phi):
+  //              top-left                top-right              bottom-left            bottom-right
+  //pointing v1(1.483529, 1.483529), v2(1.483529, 1.658063), v3(1.658063, 1.483529), v4(1.658063, 1.658063); // 10deg x 10deg.
+  pointing v1(1.540566, 1.540566), v2(1.540566, 1.601026), v3(1.601026, 1.540566), v4(1.601026, 1.601026); // Square of 12deg^2:
+  
+  // Create window function in Healpix map:
+  vertex.push_back(v1); vertex.push_back(v2); vertex.push_back(v4); vertex.push_back(v3);
+  Map.SetNside(nside, RING);
+  Map.query_polygon(vertex, pixset);
+  pixset.toVector(pixlist);
+  npixels = 12*Map.Nside()*Map.Nside();
+  for (i=0; i<npixels; i++) Map[i]=0.0;
+  count = 0;
+  for (i=0; i<pixlist.size(); i++) {
+    Map[pixlist[i]]=1.0;
+    count++;
+  }
+  // Print total area:
+  printf("Total area (deg^2): %g\n",((double)count)/((double)npixels)*41252.96125);
+  // Output file:
+  write_Healpix_map_to_fits("!"+outfile, Map, planckType<MAP_PRECISION>());
+}
+
 
 // Reads a Healpix FITS file containing the map2alm weights into a double array:
 int ReadHealpixWeights(int col, int nside, double *weights) {
